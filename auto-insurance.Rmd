@@ -3,6 +3,7 @@ title: "auto-insurance"
 author: "Krista Waugh"
 date: "3/7/2019"
 output:
+  word_document: default
   html_document:
     df_print: paged
 ---
