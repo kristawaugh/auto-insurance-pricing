@@ -1,0 +1,96 @@
+---
+title: "auto-insurance"
+author: "Krista Waugh"
+date: "3/7/2019"
+output:
+  html_document:
+    df_print: paged
+---
+```{r}
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+```
+
+
+```{r}
+
+data <- read_csv("decal_midterm.csv")
+colnames(data) = c("claim_number", "age", "income", "marital_status", "education", "mvr_points", "car_age", "location", "old_claim", "premium")
+data
+```
+
+```{r}
+
+age <- select(data, age, mvr_points)
+age
+
+ggplot(age, aes(age, mvr_points)) + geom_point()
+```
+
+```{r}
+income <- select(data, income, mvr_points)
+
+ggplot(income, aes(income, mvr_points)) + geom_point(size = .5)
+```
+
+```{r}
+marital_status <- select(data, marital_status, mvr_points)
+
+ggplot(marital_status, aes(marital_status, mvr_points)) + geom_col(binwidth = 2)
+```
+```{r}
+
+phd <- filter(data, education == "PhD")
+highschool <- filter(data, education == "High School")
+bachelor  <- filter(data, education == "Bachelors")
+under_highschool <- filter(data, education == "<High School")
+```
+
+```{r eval = FALSE}
+education <- 
+  ggplot(, aes(y = data$mvr_points)) +
+  geom_col(x = phd) +
+  geom_col(x = bachelor) +
+  geom_col(x = highschool) +
+  geom_col(x = under_highschool)
+education
+```
+
+
+```{r}
+car <- select(data, car_age, mvr_points)
+
+ggplot(car, aes(car_age, mvr_points)) + geom_jitter()
+```
+
+
+```{r}
+rural_urban <- 
+  select(data, )
+```
+
+
+
+
+```{r}
+phd <- filter(data, education == "PhD")
+highschool <- filter(data, education == "High School")
+bachelor  <- filter(data, education == "Bachelors")
+under_highschool <- filter(data, education == "<High School")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
