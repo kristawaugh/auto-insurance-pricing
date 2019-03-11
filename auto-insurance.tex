@@ -24,7 +24,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={auto-insurance},
+            pdftitle={decal-midterm},
             pdfauthor={Krista Waugh},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -114,7 +114,7 @@
 
 \setlength{\droptitle}{-2em}
 
-  \title{auto-insurance}
+  \title{decal-midterm}
     \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
     \author{Krista Waugh}
@@ -122,7 +122,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{3/7/2019}
+    \date{3/6/2019}
 
 
 \begin{document}
@@ -132,6 +132,7 @@
 \begin{Highlighting}[]
 \KeywordTok{library}\NormalTok{(readr)}
 \KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(plyr)}
 \KeywordTok{library}\NormalTok{(dplyr)}
 \end{Highlighting}
 \end{Shaded}
@@ -139,6 +140,13 @@
 \begin{verbatim}
 ## 
 ## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:plyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
 \end{verbatim}
 
 \begin{verbatim}
@@ -171,13 +179,59 @@
 
 \begin{verbatim}
 ## -- Conflicts -------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
+## x dplyr::arrange()   masks plyr::arrange()
+## x purrr::compact()   masks plyr::compact()
+## x dplyr::count()     masks plyr::count()
+## x dplyr::failwith()  masks plyr::failwith()
+## x dplyr::filter()    masks stats::filter()
+## x dplyr::id()        masks plyr::id()
+## x dplyr::lag()       masks stats::lag()
+## x dplyr::mutate()    masks plyr::mutate()
+## x dplyr::rename()    masks plyr::rename()
+## x dplyr::summarise() masks plyr::summarise()
+## x dplyr::summarize() masks plyr::summarize()
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data <-}\StringTok{ }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"decal_midterm.csv"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(ggbiplot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: scales
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'scales'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:purrr':
+## 
+##     discard
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:readr':
+## 
+##     col_factor
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: grid
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(kimisc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data0<-}\StringTok{ }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"decal_midterm.csv"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -199,13 +253,33 @@
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{colnames}\NormalTok{(data) =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"claim_number"}\NormalTok{, }\StringTok{"age"}\NormalTok{, }\StringTok{"income"}\NormalTok{, }\StringTok{"marital_status"}\NormalTok{, }\StringTok{"education"}\NormalTok{, }\StringTok{"mvr_points"}\NormalTok{, }\StringTok{"car_age"}\NormalTok{, }\StringTok{"location"}\NormalTok{, }\StringTok{"old_claim"}\NormalTok{, }\StringTok{"premium"}\NormalTok{)}
-\NormalTok{data}
+\KeywordTok{colnames}\NormalTok{(data0) =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"claim_number"}\NormalTok{, }\StringTok{"age"}\NormalTok{, }\StringTok{"income"}\NormalTok{, }\StringTok{"marital_status"}\NormalTok{, }\StringTok{"education"}\NormalTok{, }\StringTok{"mvr_points"}\NormalTok{, }\StringTok{"car_age"}\NormalTok{, }\StringTok{"location"}\NormalTok{, }\StringTok{"old_claim"}\NormalTok{, }\StringTok{"premium"}\NormalTok{)}
+\NormalTok{data0}\OperatorTok{$}\NormalTok{income2 =}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{gsub}\NormalTok{(}\StringTok{"[}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{$,]"}\NormalTok{, }\StringTok{""}\NormalTok{, data0}\OperatorTok{$}\NormalTok{income))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 8,161 x 10
+## Warning: NAs introduced by coercion
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data0}\OperatorTok{$}\NormalTok{old_claim2 =}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{gsub}\NormalTok{(}\StringTok{"[}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{$-,]"}\NormalTok{, }\StringTok{""}\NormalTok{, data0}\OperatorTok{$}\NormalTok{old_claim))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: NAs introduced by coercion
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data0}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 8,161 x 12
 ##    claim_number   age income marital_status education mvr_points car_age
 ##           <dbl> <dbl> <chr>  <chr>          <chr>          <dbl>   <dbl>
 ##  1            1    60 $67,3~ No             PhD                3      18
@@ -218,32 +292,155 @@
 ##  8            8    37 $107,~ Yes            Bachelors         10       7
 ##  9            9    34 $62,9~ No             Bachelors          0       1
 ## 10           10    50 $106,~ No             Bachelors          1      17
-## # ... with 8,151 more rows, and 3 more variables: location <chr>,
-## #   old_claim <chr>, premium <chr>
+## # ... with 8,151 more rows, and 5 more variables: location <chr>,
+## #   old_claim <chr>, premium <chr>, income2 <dbl>, old_claim2 <dbl>
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{age <-}\StringTok{ }\KeywordTok{select}\NormalTok{(data, age, mvr_points)}
+\NormalTok{pca_data <-}\StringTok{  }\KeywordTok{select}\NormalTok{(data0, age, income2, mvr_points, old_claim2, car_age, education, location, marital_status)}
+\NormalTok{pca_data}\OperatorTok{$}\NormalTok{old_claim2[}\KeywordTok{is.na}\NormalTok{(pca_data}\OperatorTok{$}\NormalTok{old_claim2)] <-}\StringTok{ }\DecValTok{0}
+\NormalTok{pca_data}\OperatorTok{$}\NormalTok{income2[}\KeywordTok{is.na}\NormalTok{(pca_data}\OperatorTok{$}\NormalTok{income2)] <-}\StringTok{ }\DecValTok{0}
+\NormalTok{pca_data}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 8,161 x 8
+##      age income2 mvr_points old_claim2 car_age education location
+##    <dbl>   <dbl>      <dbl>      <dbl>   <dbl> <chr>     <chr>   
+##  1    60   67349          3       4461      18 PhD       Highly ~
+##  2    43   91449          0          0       1 High Sch~ Highly ~
+##  3    35   16039          3      38690      10 High Sch~ Highly ~
+##  4    51   64618          0          0       6 <High Sc~ Highly ~
+##  5    50  114986          3      19217      17 PhD       Highly ~
+##  6    34  125301          0          0       7 Bachelors Highly ~
+##  7    54   18755          0          0       1 <High Sc~ Highly ~
+##  8    37  107961         10       2374       7 Bachelors Highly ~
+##  9    34   62978          0          0       1 Bachelors Highly ~
+## 10    50  106952          1          0      17 Bachelors Highly ~
+## # ... with 8,151 more rows, and 1 more variable: marital_status <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sample_pca_data <-}\StringTok{ }\NormalTok{pca_data[}\KeywordTok{sample}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(pca_data), }\DecValTok{200}\NormalTok{), ]}
+\NormalTok{sample_pca_data}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 200 x 8
+##      age income2 mvr_points old_claim2 car_age education location
+##    <dbl>   <dbl>      <dbl>      <dbl>   <dbl> <chr>     <chr>   
+##  1    60   32175          1       2102      16 Masters   Highly ~
+##  2    33   22899          0          0       5 <High Sc~ Highly ~
+##  3    43       0          1          0       6 High Sch~ Highly ~
+##  4    47       0          8       4754       1 High Sch~ Highly ~
+##  5    52   63967          3       2088       9 Bachelors Highly ~
+##  6    42   43301          8      10718       1 High Sch~ Highly ~
+##  7    52   18426          2       3653       1 <High Sc~ Highly ~
+##  8    48   57973          6       1402      15 Masters   Highly ~
+##  9    48   98569          2          0      11 Bachelors Highly ~
+## 10    49   97447          1          0      15 Masters   Highly ~
+## # ... with 190 more rows, and 1 more variable: marital_status <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{auto_pca <-}\StringTok{ }\KeywordTok{prcomp}\NormalTok{(sample_pca_data[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{)], }\DataTypeTok{center =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{scale. =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{auto_pca}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Standard deviations (1, .., p=5):
+## [1] 1.3183410 1.1308740 0.9166245 0.8119635 0.6954247
+## 
+## Rotation (n x k) = (5 x 5):
+##                   PC1       PC2        PC3        PC4        PC5
+## age        -0.4516475 0.1453506 -0.8160376  0.1885635  0.2709506
+## income2    -0.5368919 0.2753642  0.4362809 -0.3893042  0.5422387
+## mvr_points  0.3550770 0.5974963  0.1659954  0.6059162  0.3496135
+## old_claim2  0.2285570 0.6873159 -0.2414983 -0.5563611 -0.3278712
+## car_age    -0.5739718 0.2713721  0.2405530  0.3690717 -0.6346920
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(auto_pca)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Importance of components:
+##                           PC1    PC2    PC3    PC4     PC5
+## Standard deviation     1.3183 1.1309 0.9166 0.8120 0.69542
+## Proportion of Variance 0.3476 0.2558 0.1680 0.1319 0.09672
+## Cumulative Proportion  0.3476 0.6034 0.7714 0.9033 1.00000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{str}\NormalTok{(auto_pca)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## List of 5
+##  $ sdev    : num [1:5] 1.318 1.131 0.917 0.812 0.695
+##  $ rotation: num [1:5, 1:5] -0.452 -0.537 0.355 0.229 -0.574 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:5] "age" "income2" "mvr_points" "old_claim2" ...
+##   .. ..$ : chr [1:5] "PC1" "PC2" "PC3" "PC4" ...
+##  $ center  : Named num [1:5] 44.88 59486.68 1.75 3778.55 7.89
+##   ..- attr(*, "names")= chr [1:5] "age" "income2" "mvr_points" "old_claim2" ...
+##  $ scale   : Named num [1:5] 8.89 44376.14 2.29 8530.42 5.25
+##   ..- attr(*, "names")= chr [1:5] "age" "income2" "mvr_points" "old_claim2" ...
+##  $ x       : num [1:200, 1:5] -1.485 0.99 0.805 2.36 -0.389 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : NULL
+##   .. ..$ : chr [1:5] "PC1" "PC2" "PC3" "PC4" ...
+##  - attr(*, "class")= chr "prcomp"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#This doesnt make sense because the location isnt factored into auto_pca ???? }
+
+
+\NormalTok{auto_pca_marital_status <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\StringTok{"Yes"}\NormalTok{), }\KeywordTok{rep}\NormalTok{(}\StringTok{"No"}\NormalTok{))}
+
+\NormalTok{auto_pca_location <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\StringTok{"Highly Urban/ Urban"}\NormalTok{), }\KeywordTok{rep}\NormalTok{(}\StringTok{"Highly Rural/ Rural"}\NormalTok{))}
+
+\KeywordTok{ggbiplot}\NormalTok{(auto_pca, }\DataTypeTok{ellipse =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{groups =}\NormalTok{ auto_pca_location)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{auto-insurance_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{age <-}\StringTok{ }\KeywordTok{select}\NormalTok{(sample_pca_data, age, mvr_points)}
 \NormalTok{age}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 8,161 x 2
+## # A tibble: 200 x 2
 ##      age mvr_points
 ##    <dbl>      <dbl>
-##  1    60          3
-##  2    43          0
-##  3    35          3
-##  4    51          0
-##  5    50          3
-##  6    34          0
-##  7    54          0
-##  8    37         10
-##  9    34          0
-## 10    50          1
-## # ... with 8,151 more rows
+##  1    60          1
+##  2    33          0
+##  3    43          1
+##  4    47          8
+##  5    52          3
+##  6    42          8
+##  7    52          2
+##  8    48          6
+##  9    48          2
+## 10    49          1
+## # ... with 190 more rows
 \end{verbatim}
 
 \begin{Shaded}
@@ -252,78 +449,7 @@
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{auto-insurance_files/figure-latex/unnamed-chunk-3-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{income <-}\StringTok{ }\KeywordTok{select}\NormalTok{(data, income, mvr_points)}
-
-\KeywordTok{ggplot}\NormalTok{(income, }\KeywordTok{aes}\NormalTok{(income, mvr_points)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size =}\NormalTok{ .}\DecValTok{5}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{auto-insurance_files/figure-latex/unnamed-chunk-4-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{marital_status <-}\StringTok{ }\KeywordTok{select}\NormalTok{(data, marital_status, mvr_points)}
-
-\KeywordTok{ggplot}\NormalTok{(marital_status, }\KeywordTok{aes}\NormalTok{(marital_status, mvr_points)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{binwidth =} \DecValTok{2}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning: Ignoring unknown parameters: binwidth
-\end{verbatim}
-
-\includegraphics{auto-insurance_files/figure-latex/unnamed-chunk-5-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{phd <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, education }\OperatorTok{==}\StringTok{ "PhD"}\NormalTok{)}
-\NormalTok{highschool <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, education }\OperatorTok{==}\StringTok{ "High School"}\NormalTok{)}
-\NormalTok{bachelor  <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, education }\OperatorTok{==}\StringTok{ "Bachelors"}\NormalTok{)}
-\NormalTok{under_highschool <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, education }\OperatorTok{==}\StringTok{ "<High School"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{education <-}\StringTok{ }
-\StringTok{  }\KeywordTok{ggplot}\NormalTok{(, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ data}\OperatorTok{$}\NormalTok{mvr_points)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ phd) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ bachelor) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ highschool) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ under_highschool)}
-\NormalTok{education}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{car <-}\StringTok{ }\KeywordTok{select}\NormalTok{(data, car_age, mvr_points)}
-
-\KeywordTok{ggplot}\NormalTok{(car, }\KeywordTok{aes}\NormalTok{(car_age, mvr_points)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_jitter}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{auto-insurance_files/figure-latex/unnamed-chunk-8-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{rural_urban <-}\StringTok{ }
-\StringTok{  }\KeywordTok{select}\NormalTok{(data, )}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{phd <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, education }\OperatorTok{==}\StringTok{ "PhD"}\NormalTok{)}
-\NormalTok{highschool <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, education }\OperatorTok{==}\StringTok{ "High School"}\NormalTok{)}
-\NormalTok{bachelor  <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, education }\OperatorTok{==}\StringTok{ "Bachelors"}\NormalTok{)}
-\NormalTok{under_highschool <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, education }\OperatorTok{==}\StringTok{ "<High School"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics{auto-insurance_files/figure-latex/unnamed-chunk-9-1.pdf}
 
 
 \end{document}
