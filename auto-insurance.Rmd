@@ -1,87 +1,76 @@
 ---
-title: "auto-insurance"
+title: "decal-midterm"
 author: "Krista Waugh"
-date: "3/7/2019"
-output:
-  word_document: default
-  html_document:
-    df_print: paged
+date: "3/6/2019"
+output: html_document
 ---
 ```{r}
 library(readr)
 library(ggplot2)
+library(plyr)
 library(dplyr)
 library(tidyverse)
+library(ggbiplot)
+library(kimisc)
 ```
 
 
 ```{r}
 
-data <- read_csv("decal_midterm.csv")
-colnames(data) = c("claim_number", "age", "income", "marital_status", "education", "mvr_points", "car_age", "location", "old_claim", "premium")
-data
+data0<- read_csv("decal_midterm.csv")
+colnames(data0) = c("claim_number", "age", "income", "marital_status", "education", "mvr_points", "car_age", "location", "old_claim", "premium")
+data0$income2 = as.numeric(gsub("[\\$,]", "", data0$income))
+data0$old_claim2 = as.numeric(gsub("[\\$-,]", "", data0$old_claim))
+data0
 ```
 
 ```{r}
+pca_data <-  select(data0, age, income2, mvr_points, old_claim2, car_age, education, location, marital_status)
+pca_data$old_claim2[is.na(pca_data$old_claim2)] <- 0
+pca_data$income2[is.na(pca_data$income2)] <- 0
+pca_data
+```
+```{r}
+sample_pca_data <- pca_data[sample(nrow(pca_data), 200), ]
+sample_pca_data
+```
 
-age <- select(data, age, mvr_points)
+
+```{r}
+auto_pca <- prcomp(sample_pca_data[c(1:5)], center = TRUE, scale. = TRUE)
+auto_pca
+```
+
+
+```{r}
+summary(auto_pca)
+```
+
+```{r}
+str(auto_pca)
+```
+
+```{r}
+#This doesnt make sense because the location isnt factored into auto_pca ???? 
+
+
+auto_pca_marital_status <- c(rep("Yes"), rep("No"))
+
+auto_pca_location <- c(rep("Highly Urban/ Urban"), rep("Highly Rural/ Rural"))
+
+ggbiplot(auto_pca, ellipse = TRUE, groups = auto_pca_location)
+```
+
+
+
+
+```{r}
+
+age <- select(sample_pca_data, age, mvr_points)
 age
 
 ggplot(age, aes(age, mvr_points)) + geom_point()
 ```
-
-```{r}
-income <- select(data, income, mvr_points)
-
-ggplot(income, aes(income, mvr_points)) + geom_point(size = .5)
-```
-
-```{r}
-marital_status <- select(data, marital_status, mvr_points)
-
-ggplot(marital_status, aes(marital_status, mvr_points)) + geom_col(binwidth = 2)
-```
-```{r}
-
-phd <- filter(data, education == "PhD")
-highschool <- filter(data, education == "High School")
-bachelor  <- filter(data, education == "Bachelors")
-under_highschool <- filter(data, education == "<High School")
-```
-
-```{r eval = FALSE}
-education <- 
-  ggplot(, aes(y = data$mvr_points)) +
-  geom_col(x = phd) +
-  geom_col(x = bachelor) +
-  geom_col(x = highschool) +
-  geom_col(x = under_highschool)
-education
-```
-
-
-```{r}
-car <- select(data, car_age, mvr_points)
-
-ggplot(car, aes(car_age, mvr_points)) + geom_jitter()
-```
-
-
-```{r}
-rural_urban <- 
-  select(data, )
-```
-
-
-
-
-```{r}
-phd <- filter(data, education == "PhD")
-highschool <- filter(data, education == "High School")
-bachelor  <- filter(data, education == "Bachelors")
-under_highschool <- filter(data, education == "<High School")
-```
-
 
 
 
