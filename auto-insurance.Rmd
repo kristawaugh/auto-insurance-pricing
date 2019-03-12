@@ -33,7 +33,7 @@ pca_data$income2[is.na(pca_data$income2)] <- 0
 pca_data
 ```
 ```{r}
-sample_pca_data <- pca_data[sample(nrow(pca_data), 200), ]
+sample_pca_data <- pca_data[sample(nrow(pca_data), 500), ]
 sample_pca_data
 ```
 
@@ -53,16 +53,12 @@ str(auto_pca)
 ```
 
 ```{r}
-#This doesnt make sense because the location isnt factored into auto_pca ???? 
-
-
-auto_pca_marital_status <- c(rep("Yes"), rep("No"))
-
-auto_pca_location <- c(rep("Highly Urban/ Urban"), rep("Highly Rural/ Rural"))
-
-ggbiplot(auto_pca, ellipse = TRUE, groups = auto_pca_location)
+ggbiplot(auto_pca, ellipse = TRUE, groups = sample_pca_data$education)
 ```
 
+```{r}
+ggbiplot(auto_pca, ellipse = TRUE, groups = sample_pca_data$marital_status)
+```
 
 
 
@@ -76,10 +72,15 @@ ggplot(age, aes(age, mvr_points)) + geom_point()
 
 
 
+```{r}
+
+ggbiplot(auto_pca, ellipse = TRUE, groups = sample_pca_data$location)
+```
 
 
-
-
+```{r}
+ggbiplot(auto_pca)
+```
 
 
 
