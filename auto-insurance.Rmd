@@ -19,17 +19,19 @@ library(kimisc)
 
 ```{r}
 
-data0<- read_csv("decal_midterm.csv")
+data0<- read_csv("auto_insurance.csv")
 colnames(data0) = c("claim_number", "age", "income", "marital_status", "education", "mvr_points", "car_age", "location", "old_claim", "premium")
 data0$income2 = as.numeric(gsub("[\\$,]", "", data0$income))
 data0$old_claim2 = as.numeric(gsub("[\\$-,]", "", data0$old_claim))
+data0$premium2 = as.numeric(gsub("[\\$-,]", "", data0$premium))
 data0
 ```
 
 ```{r}
-pca_data <-  select(data0, age, income2, mvr_points, old_claim2, car_age, education, location, marital_status)
+pca_data <-  select(data0, age, income2, mvr_points, old_claim2, car_age, education, location, marital_status, premium2)
 pca_data$old_claim2[is.na(pca_data$old_claim2)] <- 0
 pca_data$income2[is.na(pca_data$income2)] <- 0
+pca_data$premium2[is.na(pca_data$premium2)] <- 0
 pca_data
 ```
 ```{r}
@@ -39,7 +41,7 @@ sample_pca_data
 
 
 ```{r}
-auto_pca <- prcomp(sample_pca_data[c(1:5)], center = TRUE, scale. = TRUE)
+auto_pca <- prcomp(sample_pca_data[c(1:5, 9)], center = TRUE, scale. = TRUE)
 auto_pca
 ```
 

@@ -231,7 +231,7 @@
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data0<-}\StringTok{ }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"decal_midterm.csv"}\NormalTok{)}
+\NormalTok{data0<-}\StringTok{ }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"auto_insurance.csv"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -274,12 +274,22 @@
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\NormalTok{data0}\OperatorTok{$}\NormalTok{premium2 =}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{gsub}\NormalTok{(}\StringTok{"[}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{$-,]"}\NormalTok{, }\StringTok{""}\NormalTok{, data0}\OperatorTok{$}\NormalTok{premium))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: NAs introduced by coercion
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{data0}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 8,161 x 12
+## # A tibble: 8,161 x 13
 ##    claim_number   age income marital_status education mvr_points car_age
 ##           <dbl> <dbl> <chr>  <chr>          <chr>          <dbl>   <dbl>
 ##  1            1    60 $67,3~ No             PhD                3      18
@@ -292,21 +302,23 @@
 ##  8            8    37 $107,~ Yes            Bachelors         10       7
 ##  9            9    34 $62,9~ No             Bachelors          0       1
 ## 10           10    50 $106,~ No             Bachelors          1      17
-## # ... with 8,151 more rows, and 5 more variables: location <chr>,
-## #   old_claim <chr>, premium <chr>, income2 <dbl>, old_claim2 <dbl>
+## # ... with 8,151 more rows, and 6 more variables: location <chr>,
+## #   old_claim <chr>, premium <chr>, income2 <dbl>, old_claim2 <dbl>,
+## #   premium2 <dbl>
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{pca_data <-}\StringTok{  }\KeywordTok{select}\NormalTok{(data0, age, income2, mvr_points, old_claim2, car_age, education, location, marital_status)}
+\NormalTok{pca_data <-}\StringTok{  }\KeywordTok{select}\NormalTok{(data0, age, income2, mvr_points, old_claim2, car_age, education, location, marital_status, premium2)}
 \NormalTok{pca_data}\OperatorTok{$}\NormalTok{old_claim2[}\KeywordTok{is.na}\NormalTok{(pca_data}\OperatorTok{$}\NormalTok{old_claim2)] <-}\StringTok{ }\DecValTok{0}
 \NormalTok{pca_data}\OperatorTok{$}\NormalTok{income2[}\KeywordTok{is.na}\NormalTok{(pca_data}\OperatorTok{$}\NormalTok{income2)] <-}\StringTok{ }\DecValTok{0}
+\NormalTok{pca_data}\OperatorTok{$}\NormalTok{premium2[}\KeywordTok{is.na}\NormalTok{(pca_data}\OperatorTok{$}\NormalTok{premium2)] <-}\StringTok{ }\DecValTok{0}
 \NormalTok{pca_data}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 8,161 x 8
+## # A tibble: 8,161 x 9
 ##      age income2 mvr_points old_claim2 car_age education location
 ##    <dbl>   <dbl>      <dbl>      <dbl>   <dbl> <chr>     <chr>   
 ##  1    60   67349          3       4461      18 PhD       Highly ~
@@ -319,7 +331,8 @@
 ##  8    37  107961         10       2374       7 Bachelors Highly ~
 ##  9    34   62978          0          0       1 Bachelors Highly ~
 ## 10    50  106952          1          0      17 Bachelors Highly ~
-## # ... with 8,151 more rows, and 1 more variable: marital_status <chr>
+## # ... with 8,151 more rows, and 2 more variables: marital_status <chr>,
+## #   premium2 <dbl>
 \end{verbatim}
 
 \begin{Shaded}
@@ -330,40 +343,50 @@
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 500 x 8
+## # A tibble: 500 x 9
 ##      age income2 mvr_points old_claim2 car_age education location
 ##    <dbl>   <dbl>      <dbl>      <dbl>   <dbl> <chr>     <chr>   
-##  1    42       0          0          0      13 Bachelors Highly ~
-##  2    53   88712          2       1835      11 Bachelors Highly ~
-##  3    40       0          4       5784       7 Bachelors Highly ~
-##  4    36   34057          6       7098       7 <High Sc~ Highly ~
-##  5    39   23756          0          0      20 Masters   Highly ~
-##  6    52   31742          0          0      10 Masters   Highly ~
-##  7    39  102052          1          0      16 PhD       Highly ~
-##  8    49   97595          5       6971      14 Masters   Highly ~
-##  9    48    7505          8       7341       5 High Sch~ Highly ~
-## 10    45   39055          6       5762       1 High Sch~ Highly ~
-## # ... with 490 more rows, and 1 more variable: marital_status <chr>
+##  1    42   61182          0          0      12 Bachelors Highly ~
+##  2    53   46817          0          0      13 Masters   Highly ~
+##  3    48   19393          1          0       8 Bachelors Highly ~
+##  4    47   30835          1          0       1 <High Sc~ Highly ~
+##  5    60   46243          4        990       1 <High Sc~ Highly ~
+##  6    39   36141          0          0       1 High Sch~ Highly ~
+##  7    58   66762          6       4007      17 PhD       Highly ~
+##  8    41       0          1       3825       1 Bachelors Highly ~
+##  9    29   36324          0          0       9 High Sch~ Highly ~
+## 10    29   15936          1          0       1 <High Sc~ Highly ~
+## # ... with 490 more rows, and 2 more variables: marital_status <chr>,
+## #   premium2 <dbl>
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{auto_pca <-}\StringTok{ }\KeywordTok{prcomp}\NormalTok{(sample_pca_data[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{)], }\DataTypeTok{center =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{scale. =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{auto_pca <-}\StringTok{ }\KeywordTok{prcomp}\NormalTok{(sample_pca_data[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{, }\DecValTok{9}\NormalTok{)], }\DataTypeTok{center =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{scale. =} \OtherTok{TRUE}\NormalTok{)}
 \NormalTok{auto_pca}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## Standard deviations (1, .., p=5):
-## [1] 1.2702578 1.0941551 0.9123963 0.9011190 0.7380970
+## Standard deviations (1, .., p=6):
+## [1] 1.462496e+00 1.251254e+00 9.539722e-01 9.068761e-01 7.503213e-01
+## [6] 1.311425e-16
 ## 
-## Rotation (n x k) = (5 x 5):
-##                    PC1        PC2        PC3         PC4        PC5
-## age         0.46715058 -0.1368756  0.7374986  0.44653351  0.1404955
-## income2     0.62160570  0.1619852 -0.2828657  0.08888989 -0.7067197
-## mvr_points -0.20620983  0.6401544 -0.1997970  0.69998206  0.1333646
-## old_claim2 -0.07518913  0.6946768  0.5007145 -0.48252253 -0.1680114
-## car_age     0.58923746  0.2503046 -0.2923165 -0.26439276  0.6593894
+## Rotation (n x k) = (6 x 6):
+##                    PC1        PC2         PC3        PC4         PC5
+## age         0.04261547 0.47237508 -0.33872622  0.8109104  0.05229400
+## income2    -0.09030733 0.61882615  0.01406194 -0.3933136  0.67379927
+## mvr_points  0.29356880 0.04959780  0.88666777  0.3157585  0.15960662
+## old_claim2  0.66545804 0.07830358 -0.16194981 -0.1441396 -0.06348374
+## car_age    -0.13482236 0.61578661  0.21547992 -0.2155759 -0.71395044
+## premium2    0.66545804 0.07830358 -0.16194981 -0.1441396 -0.06348374
+##                      PC6
+## age         0.000000e+00
+## income2     2.043152e-15
+## mvr_points -1.180103e-15
+## old_claim2 -7.071068e-01
+## car_age    -2.136997e-15
+## premium2    7.071068e-01
 \end{verbatim}
 
 \begin{Shaded}
@@ -374,10 +397,10 @@
 
 \begin{verbatim}
 ## Importance of components:
-##                           PC1    PC2    PC3    PC4    PC5
-## Standard deviation     1.2703 1.0942 0.9124 0.9011 0.7381
-## Proportion of Variance 0.3227 0.2394 0.1665 0.1624 0.1090
-## Cumulative Proportion  0.3227 0.5622 0.7286 0.8910 1.0000
+##                           PC1    PC2    PC3    PC4     PC5       PC6
+## Standard deviation     1.4625 1.2513 0.9540 0.9069 0.75032 1.311e-16
+## Proportion of Variance 0.3565 0.2609 0.1517 0.1371 0.09383 0.000e+00
+## Cumulative Proportion  0.3565 0.6174 0.7691 0.9062 1.00000 1.000e+00
 \end{verbatim}
 
 \begin{Shaded}
@@ -388,19 +411,19 @@
 
 \begin{verbatim}
 ## List of 5
-##  $ sdev    : num [1:5] 1.27 1.094 0.912 0.901 0.738
-##  $ rotation: num [1:5, 1:5] 0.4672 0.6216 -0.2062 -0.0752 0.5892 ...
+##  $ sdev    : num [1:6] 1.462 1.251 0.954 0.907 0.75 ...
+##  $ rotation: num [1:6, 1:6] 0.0426 -0.0903 0.2936 0.6655 -0.1348 ...
 ##   ..- attr(*, "dimnames")=List of 2
-##   .. ..$ : chr [1:5] "age" "income2" "mvr_points" "old_claim2" ...
-##   .. ..$ : chr [1:5] "PC1" "PC2" "PC3" "PC4" ...
-##  $ center  : Named num [1:5] 44.17 60042.48 1.67 3985.51 8.43
-##   ..- attr(*, "names")= chr [1:5] "age" "income2" "mvr_points" "old_claim2" ...
-##  $ scale   : Named num [1:5] 8.47 47328.77 2.24 8639.06 5.54
-##   ..- attr(*, "names")= chr [1:5] "age" "income2" "mvr_points" "old_claim2" ...
-##  $ x       : num [1:500, 1:5] -0.234 1.125 -1.4 -1.369 0.657 ...
+##   .. ..$ : chr [1:6] "age" "income2" "mvr_points" "old_claim2" ...
+##   .. ..$ : chr [1:6] "PC1" "PC2" "PC3" "PC4" ...
+##  $ center  : Named num [1:6] 45 61169.75 1.57 4272.16 8.55 ...
+##   ..- attr(*, "names")= chr [1:6] "age" "income2" "mvr_points" "old_claim2" ...
+##  $ scale   : Named num [1:6] 8.62 46877.13 1.9 9269.53 5.59 ...
+##   ..- attr(*, "names")= chr [1:6] "age" "income2" "mvr_points" "old_claim2" ...
+##  $ x       : num [1:500, 1:6] -0.954 -0.896 -0.593 -0.451 0.19 ...
 ##   ..- attr(*, "dimnames")=List of 2
 ##   .. ..$ : NULL
-##   .. ..$ : chr [1:5] "PC1" "PC2" "PC3" "PC4" ...
+##   .. ..$ : chr [1:6] "PC1" "PC2" "PC3" "PC4" ...
 ##  - attr(*, "class")= chr "prcomp"
 \end{verbatim}
 
@@ -432,15 +455,15 @@
 ##      age mvr_points
 ##    <dbl>      <dbl>
 ##  1    42          0
-##  2    53          2
-##  3    40          4
-##  4    36          6
-##  5    39          0
-##  6    52          0
-##  7    39          1
-##  8    49          5
-##  9    48          8
-## 10    45          6
+##  2    53          0
+##  3    48          1
+##  4    47          1
+##  5    60          4
+##  6    39          0
+##  7    58          6
+##  8    41          1
+##  9    29          0
+## 10    29          1
 ## # ... with 490 more rows
 \end{verbatim}
 
